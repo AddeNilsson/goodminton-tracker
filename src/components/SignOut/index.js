@@ -1,6 +1,6 @@
 import React from 'react';
 import { withFirebase } from '../Firebase';
-import { Button, ButtonOutlined } from '../Buttons';
+import { ButtonOutlined } from '../Buttons';
 
 const SignOutButtonBase = ({ firebase }) => (
   <ButtonOutlined

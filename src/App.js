@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppHeader from './components/AppHeader';
 import Menu from './components/Menu';
-import Navigation from './components/Navigation';
 import Routes from './Routes';
-import { withFirebase } from './components/Firebase';
 import { withAuthentication } from './components/Session';
 
 const AppBarHeight = 50;

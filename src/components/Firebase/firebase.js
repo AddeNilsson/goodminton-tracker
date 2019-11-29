@@ -15,6 +15,7 @@ const config = {
 class Firebase {
   constructor() {
     app.initializeApp(config);
+    // app.analytics(); ???
     this.auth = app.auth();
     this.db = app.database();
   }
@@ -28,7 +29,7 @@ class Firebase {
   pswReset = email => this.auth.sendPasswordResetEmail(email);
   pswUpdate = password => this.auth.currentUser.updatePassword(password)
 
-  /* User API*/
+  /* Users API*/
   user = uid => this.db.ref(`users/${uid}`);
   users = () => this.db.ref('users');
 }

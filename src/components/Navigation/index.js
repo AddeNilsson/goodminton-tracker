@@ -9,7 +9,7 @@ const Navigation = ({ closeMenu }) => {
       {user => (
         Object.keys(routes)
           .map(route => routes[route])
-          .filter(r => !r.auth || (user && r.auth))
+          .filter(r => (!user && !r.auth) || (user && r.auth))
           .map((route, key) => (
             <MenuItem
               key={key}

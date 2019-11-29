@@ -28,6 +28,7 @@ const SignInFormBase = ({ firebase, history }) => {
         setLoading(false);
       });
   }
+  const handleKey = e => e.keyCode === 13 ? handleSubmit(e) : null;
   const isInvalid = !email || ! psw;
 
   return (
@@ -35,7 +36,7 @@ const SignInFormBase = ({ firebase, history }) => {
       <Grid item xs={10} md={4}>
         <Card>
           <CardContent>
-            <form onSubmit={e => handleSubmit(e)}>
+            <form onSubmit={e => handleSubmit(e)} onKeyDown={handleKey} autoComplete={'off'}>
               <TextField
                 value={email}
                 label={'Email'}
@@ -56,6 +57,7 @@ const SignInFormBase = ({ firebase, history }) => {
                       <Button
                         disabled={isInvalid || loading}
                         handleClick={handleSubmit}
+                        role={'submit'}
                         >{ !loading ? 'Sign In' : 'Loading..' }</Button>
                     </div>
                   </CardActions>
@@ -73,11 +75,15 @@ const SignInFormBase = ({ firebase, history }) => {
 export const SignInForm = withRouter(withFirebase(SignInFormBase));
 
 const SignIn = () => (
-  <div>
-    <h1>SignIn!</h1>
-    <SignInForm />
+  <Grid container justify={'center'}>
+    <Grid item xs={4}>
+      <h1>SignIn!</h1>
+    </Grid>
+    <Grid item xs={12}>
+      <SignInForm />
+    </Grid>
     <SignUpLink />
-  </div>
+  </Grid>
 );
 
 export default SignIn;

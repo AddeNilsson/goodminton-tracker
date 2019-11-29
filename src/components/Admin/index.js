@@ -10,13 +10,17 @@ const columns = [
   { id: 'uid', label: 'User Id' },
   { id: 'username', label: 'Username' },
   { id: 'email', label: 'User Email' },
+  { id: 'win', label: 'User Total Won' },
+  { id: 'loss', label: 'User Total Lost' },
+  { id: 'wo', label: 'User Walk-overs' },
+  { id: 'total', label: 'User Total Games' },
 ];
 
 const UsersList = ({ users }) => (
   <Table columnData={columns}>
-    { users.map(u => (
-      <TableRow>
-        { columns.map(c => <TableCell>{ u[c.id] }</TableCell>) }
+    { users.map((u, i) => (
+      <TableRow key={i}>
+        { columns.map((c, i) => <TableCell key={i}>{ u[c.id] }</TableCell>) }
       </TableRow>
     ))}
   </Table>
@@ -37,13 +41,13 @@ const Admin = ({ firebase }) => {
       setLoading(false);
     });
     return () => firebase.users().off()
-  }, []);
+  }, [firebase]);
 
   return (
     <div>
       <h1>Admin!</h1>
       { loading
-          ? <p>Loading</p>
+          ? <p>Loading..</p>
           : <UsersList users={users} />
       }
     </div>

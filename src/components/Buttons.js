@@ -12,13 +12,14 @@ export const ButtonOutlined = ({ children, handleClick }) => (
     { children }
   </MuiButton>
 );
-export const Button = ({ children, handleClick, disabled = false }) => (
+export const Button = ({ children, handleClick, disabled = false, fullWidth, role = 'button' }) => (
   <MuiButton
     variant={'contained'}
     color={'secondary'}
     onClick={handleClick}
     disabled={disabled}
-    role={'button'}
+    role={role}
+    fullWidth={fullWidth}
   >
     { children }
   </MuiButton>

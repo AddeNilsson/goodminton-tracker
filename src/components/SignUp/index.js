@@ -10,6 +10,8 @@ import * as ROUTES from '../../constants/routes';
 import { withFirebase } from '../Firebase';
 import { Button } from '../Buttons';
 
+const newUserBase = { win: 0, loss: 0, wo: 0, total: 0 };
+
 export const SignUpFormBase = ({ firebase, history }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -21,6 +23,8 @@ export const SignUpFormBase = ({ firebase, history }) => {
     psw !== pswConfirm || psw.length < 5 ||
     username === '' || email === '';
 
+  const handleKey = e => e.keyCode === 13 ? handleSubmit(e) : null;
+  
   const handleSubmit = e => {
     e.preventDefault();
     setLoading(true);
@@ -28,7 +32,7 @@ export const SignUpFormBase = ({ firebase, history }) => {
       .then(user => {
         firebase
           .user(user.user.uid)
-          .set({ username, email })
+          .set({ username, email, ...newUserBase })
       })
       .then(() => history.push(ROUTES.HOME.path))
       .catch(e => {
@@ -42,7 +46,7 @@ export const SignUpFormBase = ({ firebase, history }) => {
       <Grid item xs={10} md={4}>
         <Card>
           <CardContent>
-            <form onSubmit={handleSubmit} onSubmit={e => handleSubmit(e)}>
+            <form onSubmit={e => handleSubmit(e)} onKeyDown={handleKey} autoComplete={'off'}>
               <TextField
                 value={username}
                 label={'Username'}
@@ -103,10 +107,14 @@ const SignUpForm = withRouter(withFirebase(SignUpFormBase));
 
 const SignUpPage = () => {
   return (
-    <div>
-      <h1>SignUp!</h1>
-      <SignUpForm />
-    </div>
+    <Grid container justify={'center'}>
+      <Grid item xs={4}>
+        <h1>SignUp!</h1>
+      </Grid>
+      <Grid item xs={12}>
+        <SignUpForm />
+      </Grid>
+    </Grid>
   );
 };
 
