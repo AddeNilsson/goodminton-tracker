@@ -3,7 +3,7 @@ import { UserContext, withAuthorization } from '../Session';
 import { Button } from '../Buttons';
 import { Mood, SentimentDissatisfied, MoodBad } from '@material-ui/icons';
 import Grid from '@material-ui/core/Grid';
-import { Card, CardContent, CardActionArea, CardMedia, CardActions, Typography } from '@material-ui/core';
+import { Card, CardContent, CardActionArea, CardMedia, CardActions, Typography, Hidden } from '@material-ui/core';
 import img from './img.jpg';
 import DetailsCard from './DetailsCard';
 import Leaderboards from '../Leaderboards';
@@ -34,7 +34,12 @@ const Home  = ({ firebase, user}) => {
   return  (
     <>
       <CardContent>
-        <Typography variant={'h4'} align={'center'}>Welcome { username } !</Typography>
+        <Hidden xsDown>
+          <Typography variant={'h4'} align={'center'}>Welcome { username } !</Typography>
+        </Hidden>
+        <Hidden smUp>
+          <Typography variant={'h6'} align={'center'}>Welcome { username } !</Typography>
+        </Hidden>
       </CardContent>
       <Grid container  justify={'center'} spacing={8}>
         <Grid item xs={12} sm={10} md={6} xl={4}>
@@ -61,19 +66,21 @@ const Home  = ({ firebase, user}) => {
                     <Button
                       handleClick={() => register({ ...userData, total: total + 1, win: win + 1 })}
                       fullWidth
-                    ><Mood />I Won!!</Button>
+                    ><Mood />Won!</Button>
                     </Grid>
                   <Grid item xs={12}>
                     <Button
                       handleClick={() => register({ ...userData, total: total + 1, loss: loss + 1 })}
                       fullWidth
-                    ><SentimentDissatisfied />I Lost</Button>
+                    ><SentimentDissatisfied />Lost</Button>
                   </Grid>
                   <Grid item xs={12}>
                     <Button
                       handleClick={() => register({ ...userData, total: total + 6, wo: wo + 1, loss: userData.loss + 6 })}
                       fullWidth
-                    ><MoodBad />I didn't show up</Button>
+                    >
+                      <MoodBad /> Walkover
+                    </Button>
                   </Grid>
                 </CardActions>
               </Card>
