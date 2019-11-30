@@ -12,6 +12,18 @@ export const ButtonOutlined = ({ children, handleClick }) => (
     { children }
   </MuiButton>
 );
+
+export const ButtonOutlinedSm = ({ children, handleClick }) => (
+  <MuiButton
+    variant={'outlined'}
+    color={'inherit'}
+    onClick={handleClick}
+    size={'small'}
+  >
+    { children }
+  </MuiButton>
+);
+
 export const Button = ({ children, handleClick, disabled = false, fullWidth, role = 'button' }) => (
   <MuiButton
     variant={'contained'}
@@ -24,6 +36,7 @@ export const Button = ({ children, handleClick, disabled = false, fullWidth, rol
     { children }
   </MuiButton>
 );
+
 export const IconButton = ({ children, handleClick }) => (
   <MuiIconButton
     color={'default'}
