@@ -59,17 +59,16 @@ const Leaderboards = ({ firebase, minor }) => {
     });
     return () => firebase.users().off()
   }, [firebase]);
-  
   return (
-    <Card>
+    <div>
       <CardContent>
-        <Typography variant={minor ? 'h5' : 'h3'}>Leaderboards!</Typography>
+        <Typography variant={minor ? 'h5' : 'h3'}>Leaderboards { minor ? 'overview' : '' }</Typography>
         { loading
           ? <p>Loading</p>
           : <BoardList users={users} minor={minor} />
         }
-      </CardContent>
-    </Card>
+        </CardContent>
+    </div>
   );
 };
 

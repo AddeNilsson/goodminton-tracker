@@ -4,7 +4,6 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
-import Divider from '@material-ui/core/Divider';
 
 import img from './img.jpg';
 import { Button } from '../Buttons';
@@ -43,7 +42,6 @@ const HomeMain = ({ register, handleBulkSubmit, loading, children }) => (
           </Grid>
         </CardActions>
         <BulkForm handleBulkSubmit={handleBulkSubmit} loading={loading} />
-        <Divider />
       </Card>
     </Grid>
   </Grid>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import CardContent from '@material-ui/core/CardContent';
 
 import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
@@ -45,11 +46,13 @@ const Admin = ({ firebase }) => {
 
   return (
     <div>
-      <h1>Admin!</h1>
-      { loading
-          ? <p>Loading..</p>
-          : <UsersList users={users} />
-      }
+      <CardContent>
+        <h1>Admin!</h1>
+        { loading
+            ? <p>Loading..</p>
+            : <UsersList users={users} />
+        }
+      </CardContent>
     </div>
   );
 };
