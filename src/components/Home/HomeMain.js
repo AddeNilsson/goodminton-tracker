@@ -5,8 +5,9 @@ import { Card, CardContent, CardActionArea, CardMedia, CardActions, Typography }
 
 import img from './img.jpg';
 import { Button } from '../Buttons';
+import BulkForm from './BulkForm';
 
-const HomeMain = ({ register }) => (
+const HomeMain = ({ register, handleBulkSubmit }) => (
   <Grid container justify={'center'} alignItems={'center'} spacing={8}>
     <Grid item xs={12}>
       <Card>
@@ -16,11 +17,12 @@ const HomeMain = ({ register }) => (
             style={{ height: 250 }}
           />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              Register Game!
+            <Typography gutterBottom variant={'h5'} component={'h2'}>
+              Register A Game!
             </Typography>
             <Typography variant={'body2'} color={'textSecondary'} component={'p'}>
-              Register outcome honestly. Walkover registers 6 losses.
+              Register a game outcome using buttons or multiple games below. Walkover registers 6 losses.
+              Edit / Undo registration by using the log.
             </Typography>
           </CardContent>
         </CardActionArea>
@@ -44,6 +46,7 @@ const HomeMain = ({ register }) => (
             ><MoodBad /> Walkover</Button>
           </Grid>
         </CardActions>
+        <BulkForm handleBulkSubmit={handleBulkSubmit} />
       </Card>
     </Grid>
   </Grid>
