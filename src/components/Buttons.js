@@ -44,4 +44,13 @@ export const IconButton = ({ children, handleClick }) => (
   >{ children } </MuiIconButton>
 );
 
+export const IconButtonSm = ({ children, handleClick, disabled }) => (
+  <MuiIconButton
+    disabled={disabled}
+    color={'default'}
+    onClick={handleClick}
+    size={'small'}
+  >{ children }</MuiIconButton>
+);
+
 export default Button;

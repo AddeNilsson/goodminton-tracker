@@ -16,7 +16,6 @@ const DetailsCard = ({ winRatio, win, loss, wo, total, touched = '', setViewLogs
           >Logs</ButtonOutlinedSm>
         </Grid>
         <Grid item xs={12}><Divider /></Grid>
-
         <Grid item xs={12} lg={6}>
           <Typography variant={'subtitle2'}>Won: { win }</Typography>
         </Grid>
