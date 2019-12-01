@@ -14,6 +14,8 @@ const Home  = ({ firebase, user }) => {
   const [userData, setUserData] = useState(null);
   const [logs, setLogs] = useState([]);
   const modal = useModal();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     firebase.user(user.uid).on('value', snapshot => {
@@ -37,6 +39,7 @@ const Home  = ({ firebase, user }) => {
   if (!userData) return null;
 
   const register = state => {
+    setLoading(true);
     const touched = moment().format('YYYY-MM-DD HH:mm:ss');
     let payload;
     if (state === 'win') {
@@ -64,14 +67,14 @@ const Home  = ({ firebase, user }) => {
             date: touched,
             revertable: 1,
             reverted: 0,
-          })
+          });
+          setLoading(false);
        })
-      .catch(e => { console.error(e); });
+      .catch(e => { console.error(e); setError(e); });
   }
 
   const unregister = ({ id, action_text, amount_win, amount_loss, amount_games_total, amount_wo }) => {
     const touched = moment().format('YYYY-MM-DD HH:mm:ss');
-
     const payload = {
       ...userData,
       win: win - amount_win,
@@ -103,10 +106,11 @@ const Home  = ({ firebase, user }) => {
            revertable: 0,
          })
        })
-      .catch(e => { console.error(e); });
+      .catch(e => { console.error(e); setError(e); });
   }
 
   const handleBulkSubmit = ({ wins, losses }) => {
+    setLoading(true);
     const touched = moment().format('YYYY-MM-DD HH:mm:ss');
     const payload = {
       ...userData,
@@ -130,9 +134,10 @@ const Home  = ({ firebase, user }) => {
             amount_wo: 0,
             revertable: 1,
             reverted: 0,
-          })
+          });
+          setLoading(false);
        })
-      .catch(e => { console.error(e); });
+      .catch(e => { console.error(e); setError(e); });
   }
   const { total, win, loss, wo, username } = userData;
   const winRatio = Math.round((win / total) * 100) / 100 || 0;
@@ -152,17 +157,20 @@ const Home  = ({ firebase, user }) => {
           <Typography variant={'h6'} align={'center'}>Welcome { username } !</Typography>
         </Hidden>
       </CardContent>
-      <Grid container  justify={'center'} spacing={8}>
+      <Grid container  justify={'center'}>
         <Grid item xs={12} sm={10} md={6} xl={4}>
-          <DetailsCard
-            {...userData}
-            winRatio={winRatio}
-            setViewLogs={() => modal.openModal('logs')}
-          />
+          { error && <p>{ error.message }</p>}
           <HomeMain
             register={register}
             handleBulkSubmit={handleBulkSubmit}
-          />
+            loading={loading}
+          >
+            <DetailsCard
+              {...userData}
+              winRatio={winRatio}
+              setViewLogs={() => modal.openModal('logs')}
+            />
+          </HomeMain>
         </Grid>
         <Grid item xs={12} sm={10} md={4} lg={3} xl={2}>
           <Leaderboards minor />

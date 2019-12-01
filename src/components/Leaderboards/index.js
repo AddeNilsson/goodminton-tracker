@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
 import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
 import Table from '../Table';
-import { Card, CardContent } from '@material-ui/core';
 
 const colMinor = [
   { id: 'username', label: 'Username' },
@@ -31,7 +33,8 @@ const BoardList = ({ users, minor }) => {
       ))}
     </Table>
   );
-}
+};
+
 const Leaderboards = ({ firebase, minor }) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
@@ -60,7 +63,7 @@ const Leaderboards = ({ firebase, minor }) => {
   return (
     <Card>
       <CardContent>
-        { !minor && <h1>Leaderboards!</h1> }
+        <Typography variant={minor ? 'h5' : 'h3'}>Leaderboards!</Typography>
         { loading
           ? <p>Loading</p>
           : <BoardList users={users} minor={minor} />
@@ -69,6 +72,7 @@ const Leaderboards = ({ firebase, minor }) => {
     </Card>
   );
 };
+
 const condition = user => !!user;
 
 export default withFirebase(withAuthorization(condition)(Leaderboards));

@@ -5,16 +5,17 @@ import MuiTableHead from '@material-ui/core/TableHead';
 import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableBody from '@material-ui/core/TableBody';
 
-// import Table from '@material-ui/core/Table';
-// import Table from '@material-ui/core/Table';
-
-const Table = ({ columnData, rowData, children }) => (
-  <MuiTable>
+const Table = ({ columnData, rowData, children, size = 'medium', padding = 'default' }) => (
+  <MuiTable size={size} padding={padding}>
     <MuiTableHead>
       <MuiTableRow>
         {
           columnData.map(c => (
-            <MuiTableCell key={c.id}>{ c.label }</MuiTableCell>
+            <MuiTableCell
+              key={c.id}
+              align={'left'}
+              style={padding === 'none' ? { padding: '2px 4px'} : {}}
+            >{ c.label }</MuiTableCell>
           ))
         }
       </MuiTableRow>
