@@ -1,11 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import CloseIcon from '@material-ui/icons/Close';
-import { IconButton } from '../Buttons';
 
+import { IconButton } from '../Buttons';
 
 const Modal = ({
   show, closeModal, title, children, maxWidth,
@@ -15,7 +16,7 @@ const Modal = ({
     onClose={closeModal}
     maxWidth={maxWidth}
   >
-    <Grid container justify={'space-between'} alignItems={'center'}>
+    <Grid container justify="space-between" alignItems="center">
       <Grid item xs={8}>
         <DialogTitle>
           { title }
@@ -35,6 +36,14 @@ const Modal = ({
     </DialogContent>
   </Dialog>
 );
+
+Modal.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  children: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,
+  maxWidth: PropTypes.string,
+  show: PropTypes.bool.isRequired,
+};
 
 Modal.defaultProps = {
   maxWidth: 'md',

@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import Table from '../Table';
-import { IconButtonSm } from '../Buttons';
 import UndoIcon from '@material-ui/icons/Undo';
 import RevertedIcon from '@material-ui/icons/CheckCircle';
+import Table from '../Table';
+import { IconButtonSm } from '../Buttons';
 
 const columns = [
   { id: 'date', label: 'Date' },
@@ -18,30 +19,38 @@ const columns = [
 ];
 
 const Logs = ({ logs, unregister }) => (
-  <Table size={'small'} padding={'none'} columnData={columns}>
-  { logs
-    .sort((a, b) => (
-      a.date > b.date ? -1 : b.date > a.date ? 1 : 0
-    ))
-    .map((l, i) => (
-    <TableRow key={i}>
-      { columns.map((c, i) => (
-        c.id === 'reverted'
-          ? <TableCell align={'left'} style={{ padding: '2px 4px'}} key={i}>{ l.reverted ? <RevertedIcon color={'action'} /> : null }</TableCell>
-          :
-          c.id !== 'revert'
-            ? <TableCell align={'left'} style={{ padding: '2px 4px'}} key={i}>{ l[c.id] }</TableCell>
-            : (
-              <TableCell align={'left'} style={{ padding: '2px 4px'}} key={i}>
-                <IconButtonSm key={i} disabled={!l.revertable}
-                  handleClick={() => unregister(l)}
-                ><UndoIcon /></IconButtonSm>
-              </TableCell>
-            )
-      )) }
-    </TableRow>
-  ))}
-</Table>
+  <Table size="small" padding="none" columnData={columns}>
+    { logs
+      .sort((a, b) => (
+        a.date > b.date ? -1 : b.date > a.date ? 1 : 0
+      ))
+      .map((l, i) => (
+        <TableRow key={i}>
+          { columns.map((c, key) => (
+            c.id === 'reverted'
+              ? <TableCell align="left" style={{ padding: '2px 4px' }} key={key}>{ l.reverted ? <RevertedIcon color="action" /> : null }</TableCell>
+              : c.id !== 'revert'
+                ? <TableCell align="left" style={{ padding: '2px 4px' }} key={key}>{ l[c.id] }</TableCell>
+                : (
+                  <TableCell align="left" style={{ padding: '2px 4px' }} key={key}>
+                    <IconButtonSm
+                      key={i}
+                      disabled={!l.revertable}
+                      handleClick={() => unregister(l)}
+                    >
+                      <UndoIcon />
+                    </IconButtonSm>
+                  </TableCell>
+                )
+          )) }
+        </TableRow>
+      ))}
+  </Table>
 );
+
+Logs.propTypes = {
+  unregister: PropTypes.func.isRequired,
+  logs: PropTypes.array.isRequired,
+};
 
 export default Logs;

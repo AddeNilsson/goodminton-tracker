@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 const Landing = () => (
   <div>
     <h1>Landing!</h1>
-    <Redirect to={'/home'} />
+    <Redirect to="/home" />
   </div>
 );
 

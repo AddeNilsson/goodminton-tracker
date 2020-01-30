@@ -11,16 +11,16 @@ const App = () => {
   const [menuOpen, toggleMenu] = useState(false);
   console.log('todo: pswforget & pswchange');
   return (
-      <Router>
-        <>
+    <Router>
+      <>
         <AppHeader handleMenu={() => toggleMenu(!menuOpen)} height={AppBarHeight} />
         <Menu closeMenu={() => toggleMenu(false)} open={menuOpen} />
         <main style={{ marginTop: AppBarHeight + 16 }}>
           <Routes />
         </main>
-        </>
+      </>
     </Router>
   );
-}
+};
 
 export default withAuthentication(App);

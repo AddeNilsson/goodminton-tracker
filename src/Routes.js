@@ -10,12 +10,12 @@ import Leaderboards from './components/Leaderboards';
 
 export default () => (
   <Switch>
-    <Route exact path={'/'} component={Landing} />
-    <Route exact path={'/sign-up'} component={SignUp} />
-    <Route exact path={'/sign-in'} component={SignIn} />
-    <Route exact path={'/home'} component={Home} />
-    <Route exact path={'/account'} component={Account} />
-    <Route exact path={'/admin'} component={Admin} />
-    <Route exact path={'/leaderboards'} component={Leaderboards} />
+    <Route exact path="/" component={Landing} />
+    <Route exact path="/sign-up" component={SignUp} />
+    <Route exact path="/sign-in" component={SignIn} />
+    <Route exact path="/home" component={Home} />
+    <Route exact path="/account" component={Account} />
+    <Route exact path="/admin" component={Admin} />
+    <Route exact path="/leaderboards" component={Leaderboards} />
   </Switch>
-)
+);

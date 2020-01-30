@@ -15,7 +15,7 @@ const config = {
 class Firebase {
   constructor() {
     app.initializeApp(config);
-    // app.analytics(); ???
+    // app.analytics();
     this.auth = app.auth();
     this.db = app.database();
   }
@@ -24,17 +24,23 @@ class Firebase {
   createUserWithEmailAndPsw = (email, psw) => (
     this.auth.createUserWithEmailAndPassword(email, psw)
   );
+
   signInWithEmailAndPsw = (email, psw) => this.auth.signInWithEmailAndPassword(email, psw);
+
   signOut = () => this.auth.signOut();
+
   pswReset = email => this.auth.sendPasswordResetEmail(email);
+
   pswUpdate = password => this.auth.currentUser.updatePassword(password)
 
-  /* Users API*/
+  /* Users API */
   user = uid => this.db.ref(`users/${uid}`);
+
   users = () => this.db.ref('users');
 
-  /* Log API*/
+  /* Log API */
   log = uid => this.db.ref(`logs/${uid}`);
+
   logs = () => this.db.ref('logs');
 }
 

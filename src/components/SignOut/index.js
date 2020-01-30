@@ -1,12 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { withFirebase } from '../Firebase';
 import { ButtonOutlined } from '../Buttons';
 
 const SignOutButtonBase = ({ firebase }) => (
   <ButtonOutlined
     handleClick={() => firebase.signOut()}
-    >Sign Out</ButtonOutlined>
+  >
+    Sign Out
+  </ButtonOutlined>
 );
+
+SignOutButtonBase.propTypes = {
+  firebase: PropTypes.object.isRequired,
+};
 
 export default withFirebase(SignOutButtonBase);
 

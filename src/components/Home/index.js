@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import { CardContent, Typography, Hidden } from '@material-ui/core';
 import moment from 'moment';
@@ -10,7 +11,9 @@ import Modal, { useModal } from '../Modal';
 import LogsList from './LogsList';
 import HomeMain from './HomeMain';
 
-const Home  = ({ firebase, user }) => {
+/* eslint-disable camelcase */
+
+const Home = ({ firebase, user }) => {
   const [userData, setUserData] = useState(null);
   const [logs, setLogs] = useState([]);
   const modal = useModal();
@@ -18,44 +21,54 @@ const Home  = ({ firebase, user }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    firebase.user(user.uid).on('value', snapshot => {
+    firebase.user(user.uid).on('value', (snapshot) => {
       const data = snapshot.val();
       setUserData(data);
-    })
-    return () => firebase.user(user.uid).off()
-  }, [firebase, user])
+    });
+    return () => firebase.user(user.uid).off();
+  }, [firebase, user]);
 
   useEffect(() => {
-    firebase.log(user.uid).on('value', snapshot => {
+    firebase.log(user.uid).on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
         const logArr = Object.keys(data).map(key => ({ id: key, ...data[key] }));
         setLogs(logArr);
       }
-    })
-    return () => firebase.logs(user.uid).off()
+    });
+    return () => firebase.logs(user.uid).off();
   }, [firebase, user]);
 
   if (!userData) return null;
 
-  const register = state => {
+  const {
+    total, win, loss, wo, username,
+  } = userData;
+
+  const register = (state) => {
     setLoading(true);
     const touched = moment().format('YYYY-MM-DD HH:mm:ss');
     let payload;
     if (state === 'win') {
-      payload = { ...userData, total: total + 1, win: win + 1, touched }
+      payload = {
+        ...userData, total: total + 1, win: win + 1, touched,
+      };
     }
     if (state === 'loss') {
-      payload = { ...userData, total: total + 1, loss: loss + 1, touched }
+      payload = {
+        ...userData, total: total + 1, loss: loss + 1, touched,
+      };
     }
     if (state === 'wo') {
-      payload = { ...userData, total: total + 6, wo: wo + 1, loss: userData.loss + 6, touched }
+      payload = {
+        ...userData, total: total + 6, wo: wo + 1, loss: userData.loss + 6, touched,
+      };
     }
     if (!payload) return;
 
     firebase.user(user.uid)
       .set(payload)
-      .then(res => {
+      .then(() => {
         const newEntry = firebase.log(user.uid).push();
         newEntry
           .set({
@@ -68,12 +81,14 @@ const Home  = ({ firebase, user }) => {
             revertable: 1,
             reverted: 0,
           });
-          setLoading(false);
-       })
-      .catch(e => { console.error(e); setError(e); });
-  }
+        setLoading(false);
+      })
+      .catch((e) => { console.error(e); setError(e); });
+  };
 
-  const unregister = ({ id, action_text, amount_win, amount_loss, amount_games_total, amount_wo }) => {
+  const unregister = ({
+    id, action_text, amount_win, amount_loss, amount_games_total, amount_wo,
+  }) => {
     const touched = moment().format('YYYY-MM-DD HH:mm:ss');
     const payload = {
       ...userData,
@@ -82,11 +97,11 @@ const Home  = ({ firebase, user }) => {
       wo: wo - amount_wo,
       total: total - amount_games_total,
       touched,
-    }
+    };
 
     firebase.user(user.uid)
       .set(payload)
-      .then(res => {
+      .then(() => {
         const newEntry = firebase.log(user.uid).push();
         newEntry
           .set({
@@ -98,16 +113,16 @@ const Home  = ({ firebase, user }) => {
             amount_games_total: -Math.abs(amount_games_total),
             revertable: 0,
             reverted: 0,
-          })
-       })
-       .then(res => {
-         firebase.log(`${user.uid}/${id}`).update({
-           reverted: 1,
-           revertable: 0,
-         })
-       })
-      .catch(e => { console.error(e); setError(e); });
-  }
+          });
+      })
+      .then(() => {
+        firebase.log(`${user.uid}/${id}`).update({
+          reverted: 1,
+          revertable: 0,
+        });
+      })
+      .catch((e) => { console.error(e); setError(e); });
+  };
 
   const handleBulkSubmit = ({ wins, losses }) => {
     setLoading(true);
@@ -122,11 +137,11 @@ const Home  = ({ firebase, user }) => {
 
     firebase.user(user.uid)
       .set(payload)
-      .then(res => {
+      .then(() => {
         const newEntry = firebase.log(user.uid).push();
         newEntry
           .set({
-            action_text: `register_bulk`,
+            action_text: 'register_bulk',
             date: touched,
             amount_loss: losses,
             amount_win: wins,
@@ -135,29 +150,31 @@ const Home  = ({ firebase, user }) => {
             revertable: 1,
             reverted: 0,
           });
-          setLoading(false);
-       })
-      .catch(e => { console.error(e); setError(e); });
-  }
-  const { total, win, loss, wo, username } = userData;
+        setLoading(false);
+      })
+      .catch((e) => { console.error(e); setError(e); });
+  };
+
   const winRatio = Math.round((win / total) * 100) / 100 || 0;
 
-  return  (
+  return (
     <>
       <Modal
-        title={'User Logs'}
+        title="User Logs"
         show={modal.showModal === 'logs'}
         closeModal={() => modal.closeModal()}
-      ><LogsList logs={logs} unregister={unregister} /></Modal>
+      >
+        <LogsList logs={logs} unregister={unregister} />
+      </Modal>
       <CardContent>
         <Hidden xsDown>
-          <Typography variant={'h4'} align={'center'}>Welcome { username } !</Typography>
+          <Typography variant="h4" align="center">Welcome { username } !</Typography>
         </Hidden>
         <Hidden smUp>
-          <Typography variant={'h6'} align={'center'}>Welcome { username } !</Typography>
+          <Typography variant="h6" align="center">Welcome { username } !</Typography>
         </Hidden>
       </CardContent>
-      <Grid container  justify={'center'}>
+      <Grid container justify="center">
         <Grid item xs={12} sm={10} md={6} xl={4}>
           { error && <p>{ error.message }</p>}
           <HomeMain
@@ -184,15 +201,18 @@ const Home  = ({ firebase, user }) => {
       </Grid>
     </>
   );
-}
+};
 
-const HomePage = (props) => (
+const HomePage = props => (
   <UserContext.Consumer>
-    { user => (
-      <Home {...props} user={user} />)
-    }
+    { user => (<Home {...props} user={user} />) }
   </UserContext.Consumer>
 );
+
+Home.propTypes = {
+  firebase: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+};
 
 const condition = user => !!user;
 export default withAuthorization(condition)(HomePage);
