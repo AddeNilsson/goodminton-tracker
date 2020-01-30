@@ -173,7 +173,13 @@ const Home  = ({ firebase, user }) => {
           </HomeMain>
         </Grid>
         <Grid item xs={12} sm={10} md={4} lg={3} xl={2}>
-          <Leaderboards minor />
+          <Leaderboards
+            minor
+            columns={[
+              { id: 'username', label: 'Username' },
+              { id: 'ratio', label: 'Win Ratio' },
+            ]}
+          />
         </Grid>
       </Grid>
     </>

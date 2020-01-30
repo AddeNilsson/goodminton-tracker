@@ -15,7 +15,7 @@ const App = () => {
         <>
         <AppHeader handleMenu={() => toggleMenu(!menuOpen)} height={AppBarHeight} />
         <Menu closeMenu={() => toggleMenu(false)} open={menuOpen} />
-        <main style={{ marginTop: AppBarHeight }}>
+        <main style={{ marginTop: AppBarHeight + 16 }}>
           <Routes />
         </main>
         </>

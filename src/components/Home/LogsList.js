@@ -32,7 +32,7 @@ const Logs = ({ logs, unregister }) => (
           c.id !== 'revert'
             ? <TableCell align={'left'} style={{ padding: '2px 4px'}} key={i}>{ l[c.id] }</TableCell>
             : (
-              <TableCell align={'left'} style={{ padding: '2px 4px'}}>
+              <TableCell align={'left'} style={{ padding: '2px 4px'}} key={i}>
                 <IconButtonSm key={i} disabled={!l.revertable}
                   handleClick={() => unregister(l)}
                 ><UndoIcon /></IconButtonSm>
