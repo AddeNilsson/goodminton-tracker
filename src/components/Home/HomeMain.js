@@ -15,7 +15,7 @@ import BulkForm from './BulkForm';
 const HomeMain = ({
   register, handleBulkSubmit, loading, children, username, error,
 }) => (
-  <Grid container justify="center" alignItems="center" spacing={8}>
+  <Grid container justify="center" alignItems="center">
     <Grid item xs={12}>
       <Card>
         <CardMedia
