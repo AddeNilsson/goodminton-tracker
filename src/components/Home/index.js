@@ -1,38 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
-import { CardContent, Typography, Hidden } from '@material-ui/core';
-import moment from 'moment';
 
 import { UserContext, withAuthorization } from '../Session';
-import DetailsCard from './DetailsCard';
+import PlayerDetails from './PlayerDetails';
 import Leaderboards from '../Leaderboards';
 import Modal, { useModal } from '../Modal';
 import LogsList from './LogsList';
 import HomeMain from './HomeMain';
+import useGameRegister from '../../hooks/useGameRegister';
 
-/* eslint-disable camelcase */
+const leaderboardColumns = [
+  { id: 'username', label: 'Username' },
+  { id: 'ratio', label: 'Win Ratio' },
+];
 
 const Home = ({ firebase, user }) => {
   const [userData, setUserData] = useState(null);
   const [logs, setLogs] = useState([]);
-  const modal = useModal();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const { showModal, closeModal, openModal } = useModal();
+  const { register, unregister, registerBulk } = useGameRegister({
+    firebase, uid: user.uid, setError, setLoading,
+  });
+
   useEffect(() => {
+    /* Retrieve User data */
     firebase.user(user.uid).on('value', (snapshot) => {
       const data = snapshot.val();
-      setUserData(data);
+      setUserData({
+        ...data,
+        winRatio: Math.round((data.win / data.total) * 100) / 100 || 0,
+      });
     });
     return () => firebase.user(user.uid).off();
   }, [firebase, user]);
 
   useEffect(() => {
+    /* Retrieve User logs */
     firebase.log(user.uid).on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const logArr = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        const logArr = Object.keys(data)
+          .map(key => ({ id: key, ...data[key] }));
         setLogs(logArr);
       }
     });
@@ -41,165 +53,45 @@ const Home = ({ firebase, user }) => {
 
   if (!userData) return null;
 
-  const {
-    total, win, loss, wo, username,
-  } = userData;
-
-  const register = (state) => {
-    setLoading(true);
-    const touched = moment().format('YYYY-MM-DD HH:mm:ss');
-    let payload;
-    if (state === 'win') {
-      payload = {
-        ...userData, total: total + 1, win: win + 1, touched,
-      };
-    }
-    if (state === 'loss') {
-      payload = {
-        ...userData, total: total + 1, loss: loss + 1, touched,
-      };
-    }
-    if (state === 'wo') {
-      payload = {
-        ...userData, total: total + 6, wo: wo + 1, loss: userData.loss + 6, touched,
-      };
-    }
-    if (!payload) return;
-
-    firebase.user(user.uid)
-      .set(payload)
-      .then(() => {
-        const newEntry = firebase.log(user.uid).push();
-        newEntry
-          .set({
-            action_text: `register_${state}`,
-            amount_win: state === 'win' ? 1 : 0,
-            amount_loss: state === 'loss' ? 1 : state === 'wo' ? 6 : 0,
-            amount_wo: state === 'wo' ? 1 : 0,
-            amount_games_total: state === 'wo' ? 6 : 1,
-            date: touched,
-            revertable: 1,
-            reverted: 0,
-          });
-        setLoading(false);
-      })
-      .catch((e) => { console.error(e); setError(e); });
-  };
-
-  const unregister = ({
-    id, action_text, amount_win, amount_loss, amount_games_total, amount_wo,
-  }) => {
-    const touched = moment().format('YYYY-MM-DD HH:mm:ss');
-    const payload = {
-      ...userData,
-      win: win - amount_win,
-      loss: userData.loss - amount_loss,
-      wo: wo - amount_wo,
-      total: total - amount_games_total,
-      touched,
-    };
-
-    firebase.user(user.uid)
-      .set(payload)
-      .then(() => {
-        const newEntry = firebase.log(user.uid).push();
-        newEntry
-          .set({
-            action_text: `un${action_text}`,
-            date: touched,
-            amount_win: -Math.abs(amount_win),
-            amount_loss: -Math.abs(amount_loss),
-            amount_wo: -Math.abs(amount_wo),
-            amount_games_total: -Math.abs(amount_games_total),
-            revertable: 0,
-            reverted: 0,
-          });
-      })
-      .then(() => {
-        firebase.log(`${user.uid}/${id}`).update({
-          reverted: 1,
-          revertable: 0,
-        });
-      })
-      .catch((e) => { console.error(e); setError(e); });
-  };
-
-  const handleBulkSubmit = ({ wins, losses }) => {
-    setLoading(true);
-    const touched = moment().format('YYYY-MM-DD HH:mm:ss');
-    const payload = {
-      ...userData,
-      win: userData.win + wins,
-      loss: userData.loss + losses,
-      total: userData.total + wins + losses,
-      touched,
-    };
-
-    firebase.user(user.uid)
-      .set(payload)
-      .then(() => {
-        const newEntry = firebase.log(user.uid).push();
-        newEntry
-          .set({
-            action_text: 'register_bulk',
-            date: touched,
-            amount_loss: losses,
-            amount_win: wins,
-            amount_games_total: wins + losses,
-            amount_wo: 0,
-            revertable: 1,
-            reverted: 0,
-          });
-        setLoading(false);
-      })
-      .catch((e) => { console.error(e); setError(e); });
-  };
-
-  const winRatio = Math.round((win / total) * 100) / 100 || 0;
+  const handleRegister = state => register({ state, userData });
+  const handleUnregister = entry => unregister({ entry, userData });
+  const handleBulkSubmit = data => registerBulk({ userData, data });
 
   return (
-    <>
-      <Modal
-        title="User Logs"
-        show={modal.showModal === 'logs'}
-        closeModal={() => modal.closeModal()}
-      >
-        <LogsList logs={logs} unregister={unregister} />
-      </Modal>
-      <CardContent>
-        <Hidden xsDown>
-          <Typography variant="h4" align="center">Welcome { username } !</Typography>
-        </Hidden>
-        <Hidden smUp>
-          <Typography variant="h6" align="center">Welcome { username } !</Typography>
-        </Hidden>
-      </CardContent>
-      <Grid container justify="center">
-        <Grid item xs={12} sm={10} md={6} xl={4}>
-          { error && <p>{ error.message }</p>}
-          <HomeMain
-            register={register}
-            handleBulkSubmit={handleBulkSubmit}
-            loading={loading}
-          >
-            <DetailsCard
-              {...userData}
-              winRatio={winRatio}
-              setViewLogs={() => modal.openModal('logs')}
-            />
-          </HomeMain>
-        </Grid>
-        <Grid item xs={12} sm={10} md={4} lg={3} xl={2}>
-          <Leaderboards
-            minor
-            columns={[
-              { id: 'username', label: 'Username' },
-              { id: 'ratio', label: 'Win Ratio' },
-            ]}
-          />
-        </Grid>
+    <Grid container justify="center">
+      <Grid item xs={12} sm={10} md={8} lg={6} xl={5}>
+        <Modal
+          title="User Logs"
+          show={showModal === 'logs'}
+          maxWidth="lg"
+          fullWidth
+          closeModal={() => closeModal()}
+        >
+          <LogsList logs={logs} unregister={handleUnregister} />
+        </Modal>
+        <HomeMain
+          register={handleRegister}
+          handleBulkSubmit={handleBulkSubmit}
+          loading={loading}
+          error={error}
+        >
+          <Grid container>
+            <Grid item xs={12} md={6}>
+              <PlayerDetails
+                {...userData}
+                setViewLogs={() => openModal('logs')}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Leaderboards
+                rowLimit={3}
+                columns={leaderboardColumns}
+              />
+            </Grid>
+          </Grid>
+        </HomeMain>
       </Grid>
-    </>
+    </Grid>
   );
 };
 

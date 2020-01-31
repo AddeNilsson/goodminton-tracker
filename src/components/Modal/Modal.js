@@ -9,12 +9,13 @@ import CloseIcon from '@material-ui/icons/Close';
 import { IconButton } from '../Buttons';
 
 const Modal = ({
-  show, closeModal, title, children, maxWidth,
+  show, closeModal, title, children, maxWidth, fullWidth,
 }) => (
   <Dialog
     open={show}
     onClose={closeModal}
     maxWidth={maxWidth}
+    fullWidth={fullWidth}
   >
     <Grid container justify="space-between" alignItems="center">
       <Grid item xs={8}>
@@ -43,10 +44,12 @@ Modal.propTypes = {
   title: PropTypes.string.isRequired,
   maxWidth: PropTypes.string,
   show: PropTypes.bool.isRequired,
+  fullWidth: PropTypes.bool,
 };
 
 Modal.defaultProps = {
   maxWidth: 'md',
+  fullWidth: false,
 };
 
 export default Modal;

@@ -4,23 +4,23 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+// import CardContent from '@material-ui/core/CardContent';
 
 import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
 import Table from '../Table';
 
-const BoardList = ({ users, cols }) => (
+const BoardList = ({ rows, cols }) => (
   <Table columnData={cols}>
-    { users.map((u, i) => (
+    { rows.map((r, i) => (
       <TableRow key={i}>
-        { cols.map((c, key) => <TableCell key={key}>{ u[c.id] }</TableCell>) }
+        { cols.map((c, key) => <TableCell key={key}>{ r[c.id] }</TableCell>) }
       </TableRow>
     ))}
   </Table>
 );
 
-const Leaderboards = ({ firebase, columns }) => {
+const Leaderboards = ({ firebase, columns, rowLimit }) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   useEffect(() => {
@@ -46,15 +46,16 @@ const Leaderboards = ({ firebase, columns }) => {
     });
     return () => firebase.users().off();
   }, [firebase]);
+  const rows = rowLimit
+    ? users.slice(0, rowLimit)
+    : users;
   return (
     <Grid container justify="center">
       <Grid item xs={12} md={10}>
         <Card>
-          <CardContent>
-            { loading
-              ? <p>Loading</p>
-              : <BoardList users={users} cols={columns} /> }
-          </CardContent>
+          { loading
+            ? <p>Loading</p>
+            : <BoardList rows={rows} cols={columns} /> }
         </Card>
       </Grid>
     </Grid>
@@ -64,6 +65,7 @@ const Leaderboards = ({ firebase, columns }) => {
 Leaderboards.propTypes = {
   firebase: PropTypes.object.isRequired,
   columns: PropTypes.array,
+  rowLimit: PropTypes.number,
 };
 
 Leaderboards.defaultProps = {
@@ -75,10 +77,11 @@ Leaderboards.defaultProps = {
     { id: 'wo', label: 'User Walk-overs' },
     { id: 'total', label: 'User Total Games' },
   ],
+  rowLimit: null,
 };
 
 BoardList.propTypes = {
-  users: PropTypes.array.isRequired,
+  rows: PropTypes.array.isRequired,
   cols: PropTypes.array.isRequired,
 };
 

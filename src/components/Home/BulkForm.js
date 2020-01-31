@@ -10,18 +10,16 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button } from '../Buttons';
 
 const BulkForm = ({ handleBulkSubmit, loading }) => {
-  const [wins, setWins] = useState(0);
-  const [losses, setLosses] = useState(0);
   const [expanded, setExpanded] = useState(false);
-
+  const [formData, setFormData] = useState({ bulkWin: 0, bulkLoss: 0 });
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleBulkSubmit({ wins: Number(wins), losses: Number(losses) });
-    setWins(0);
-    setLosses(0);
+    handleBulkSubmit(formData);
+    setFormData({ bulkWin: 0, bulkLoss: 0 });
     setExpanded(false);
   };
   const handleKey = e => (e.keyCode === 13 ? handleSubmit(e) : null);
+  const { bulkWin, bulkLoss } = formData;
 
   return (
     <ExpansionPanel expanded={expanded}>
@@ -38,10 +36,10 @@ const BulkForm = ({ handleBulkSubmit, loading }) => {
               <Grid container alignItems="center" spacing={8}>
                 <Grid item xs={12} sm={4}>
                   <TextField
-                    value={wins}
+                    value={bulkWin}
                     type="number"
                     label="Wins"
-                    onChange={e => setWins(e.target.value)}
+                    onChange={e => setFormData({ bulkWin: Number(e.target.value), bulkLoss })}
                     name="wins"
                     fullWidth
                     onFocus={e => e.target.select()}
@@ -49,10 +47,10 @@ const BulkForm = ({ handleBulkSubmit, loading }) => {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <TextField
-                    value={losses}
+                    value={bulkLoss}
                     type="number"
                     label="Losses"
-                    onChange={e => setLosses(e.target.value)}
+                    onChange={e => setFormData({ bulkWin, bulkLoss: Number(e.target.value) })}
                     name="losses"
                     fullWidth
                     onFocus={e => e.target.select()}

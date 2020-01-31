@@ -5,13 +5,15 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
 import img from './img.jpg';
 import { Button } from '../Buttons';
 import BulkForm from './BulkForm';
 
 const HomeMain = ({
-  register, handleBulkSubmit, loading, children,
+  register, handleBulkSubmit, loading, children, username, error,
 }) => (
   <Grid container justify="center" alignItems="center" spacing={8}>
     <Grid item xs={12}>
@@ -20,6 +22,17 @@ const HomeMain = ({
           image={img}
           style={{ height: 250 }}
         />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">
+            Welcome { username }!
+          </Typography>
+          <Typography variant="body1" color="textSecondary" component="p">
+            Register a game outcome using buttons or multiple games below.
+            Walkover registers 6 losses.
+            Edit / Undo registration by using the log.
+          </Typography>
+          { error && <Typography align="center" variant="subtitle1" color="error">{ error.message }</Typography>}
+        </CardContent>
         { children }
         <CardActions>
           <Grid item xs={12}>
@@ -61,6 +74,10 @@ HomeMain.propTypes = {
   handleBulkSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   children: PropTypes.object.isRequired,
+  error: PropTypes.object, // eslint-disable-line
+  username: PropTypes.string,
 };
+
+HomeMain.defaultProps = { username: '' };
 
 export default HomeMain;

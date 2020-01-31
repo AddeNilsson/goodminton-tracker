@@ -6,10 +6,8 @@ import MuiTableHead from '@material-ui/core/TableHead';
 import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableBody from '@material-ui/core/TableBody';
 
-console.log('removed prop rowData here, check!');
-
 const Table = ({
-  columnData, children, size = 'medium', padding = 'default',
+  columnData, children, size, padding,
 }) => (
   <MuiTable size={size} padding={padding}>
     <MuiTableHead>
