@@ -20,7 +20,6 @@ const HomeMain = ({
       <Card>
         <CardMedia
           image={img}
-          style={{ height: 250 }}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">

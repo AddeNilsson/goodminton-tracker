@@ -1,55 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 
 import { UserContext, withAuthorization } from '../Session';
 import PlayerDetails from './PlayerDetails';
-import Leaderboards from '../Leaderboards';
 import Modal, { useModal } from '../Modal';
 import LogsList from './LogsList';
 import HomeMain from './HomeMain';
 import useGameRegister from '../../hooks/useGameRegister';
-
-const leaderboardColumns = [
-  { id: 'username', label: 'Username' },
-  { id: 'ratio', label: 'Win Ratio' },
-];
+import useUser from '../../hooks/useUser';
+import TopList from '../TopList';
 
 const Home = ({ firebase, user }) => {
-  const [userData, setUserData] = useState(null);
-  const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const { userData, logs } = useUser({ firebase, user, setLoading });
   const { showModal, closeModal, openModal } = useModal();
   const { register, unregister, registerBulk } = useGameRegister({
     firebase, uid: user.uid, setError, setLoading,
   });
-
-  useEffect(() => {
-    /* Retrieve User data */
-    firebase.user(user.uid).on('value', (snapshot) => {
-      const data = snapshot.val();
-      setUserData({
-        ...data,
-        winRatio: Math.round((data.win / data.total) * 100) / 100 || 0,
-      });
-    });
-    return () => firebase.user(user.uid).off();
-  }, [firebase, user]);
-
-  useEffect(() => {
-    /* Retrieve User logs */
-    firebase.log(user.uid).on('value', (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const logArr = Object.keys(data)
-          .map(key => ({ id: key, ...data[key] }));
-        setLogs(logArr);
-      }
-    });
-    return () => firebase.logs(user.uid).off();
-  }, [firebase, user]);
 
   if (!userData) return null;
 
@@ -75,18 +45,15 @@ const Home = ({ firebase, user }) => {
           loading={loading}
           error={error}
         >
-          <Grid container>
+          <Grid container justify="space-between">
             <Grid item xs={12} md={6}>
               <PlayerDetails
                 {...userData}
                 setViewLogs={() => openModal('logs')}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Leaderboards
-                rowLimit={3}
-                columns={leaderboardColumns}
-              />
+            <Grid item xs={12} md={5}>
+              <TopList setLoading={setLoading} rowLimit={4} />
             </Grid>
           </Grid>
         </HomeMain>

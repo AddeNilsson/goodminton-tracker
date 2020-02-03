@@ -1,51 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-// import CardContent from '@material-ui/core/CardContent';
 
 import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
-import Table from '../Table';
-
-const BoardList = ({ rows, cols }) => (
-  <Table columnData={cols}>
-    { rows.map((r, i) => (
-      <TableRow key={i}>
-        { cols.map((c, key) => <TableCell key={key}>{ r[c.id] }</TableCell>) }
-      </TableRow>
-    ))}
-  </Table>
-);
+import useUsers from '../../hooks/useUsers';
+import LeaderboardList from './LeaderboardList';
 
 const Leaderboards = ({ firebase, columns, rowLimit }) => {
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    setLoading(true);
-    firebase.users().on('value', (snapshot) => {
-      const data = snapshot.val();
-      const usersData = data
-        ? Object.keys(data)
-          .map(key => ({
-            uid: key,
-            ...data[key],
-          }))
-          .map(u => ({
-            ...u,
-            ratio: Math.round((u.win / u.total) * 100) / 100 || 0,
-          }))
-          .sort((a, b) => (
-            a.ratio > b.ratio ? -1 : b.ratio > a.ratio ? 1 : 0
-          ))
-        : [];
-      setUsers(usersData);
-      setLoading(false);
-    });
-    return () => firebase.users().off();
-  }, [firebase]);
+  const { users } = useUsers({ setLoading, firebase });
+  if (users.length < 1) return null;
   const rows = rowLimit
     ? users.slice(0, rowLimit)
     : users;
@@ -55,7 +21,7 @@ const Leaderboards = ({ firebase, columns, rowLimit }) => {
         <Card>
           { loading
             ? <p>Loading</p>
-            : <BoardList rows={rows} cols={columns} /> }
+            : <LeaderboardList rows={rows} cols={columns} /> }
         </Card>
       </Grid>
     </Grid>
@@ -78,11 +44,6 @@ Leaderboards.defaultProps = {
     { id: 'total', label: 'User Total Games' },
   ],
   rowLimit: null,
-};
-
-BoardList.propTypes = {
-  rows: PropTypes.array.isRequired,
-  cols: PropTypes.array.isRequired,
 };
 
 const condition = user => !!user;

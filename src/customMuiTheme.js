@@ -9,5 +9,10 @@ export default {
         flexBasis: '50%',
       },
     },
+    MuiCardMedia: {
+      root: {
+        height: 250,
+      },
+    },
   },
 };

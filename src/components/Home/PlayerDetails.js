@@ -4,18 +4,19 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-// import CardContent from '@material-ui/core/CardContent';
-// import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 
 import { ButtonOutlinedSm } from '../Buttons';
 
 const PlayerDetails = ({
-  winRatio, win, loss, wo, total, touched = '', setViewLogs, username, // eslint-disable-line
+  winRatio, win, loss, wo, total, touched, setViewLogs, username,
 }) => (
-  <>
-    {/* <CardContent>
-      <Typography variant="subtitle2">{ username.toUpperCase() } stats:</Typography>
-    </CardContent> */}
+  <Card>
+    <Toolbar>
+      <Typography variant="h6">Stats for { username }</Typography>
+    </Toolbar>
     <List>
       <ListItem divider>
         <ListItemText primary={`Ratio: ${winRatio}`} />
@@ -37,8 +38,9 @@ const PlayerDetails = ({
         <ListItemText primary={`Updated: ${touched}`} />
       </ListItem>
     </List>
-  </>
+  </Card>
 );
+
 PlayerDetails.propTypes = {
   setViewLogs: PropTypes.func.isRequired,
   winRatio: PropTypes.number.isRequired,
@@ -46,8 +48,12 @@ PlayerDetails.propTypes = {
   loss: PropTypes.number.isRequired,
   wo: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired,
-  touched: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
+  touched: PropTypes.string,
+};
+
+PlayerDetails.defaultProps = {
+  touched: '',
 };
 
 export default PlayerDetails;

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import moment from 'moment';
 import useGameLog from './useGameLog';
 
@@ -37,12 +38,12 @@ const useGameRegister = ({
       loss: loss + bulkLoss,
       total: total + bulkWin + bulkLoss,
     };
-    const logEntry = getLogEntryBulk(data);
 
+    const logEntry = getLogEntryBulk(data);
     updateUserData({ payload, logEntry });
   };
 
-  const register = ({ state, userData }) => { // eslint-disable-line consistent-return
+  const register = ({ state, userData }) => {
     setLoading(true);
     const {
       total, win, loss, wo,
@@ -64,15 +65,13 @@ const useGameRegister = ({
         Object.assign(payload, { total: total + 6, wo: wo + 1, loss: userData.loss + 6 });
         break;
       }
-      default: return false;
+      default: return;
     }
 
     const logEntry = getLogEntryRegister(state);
-
     updateUserData({ payload, logEntry });
   };
 
-  /* eslint-disable camelcase */
   const unregister = ({ entry, userData }) => {
     setLoading(true);
     const touched = moment().format('YYYY-MM-DD HH:mm:ss');
